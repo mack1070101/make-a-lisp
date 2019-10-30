@@ -1,17 +1,15 @@
 package com.mackenziebligh
 
 fun main(args: Array<String>) {
-    fun read(input: String?) = input
-    fun eval(input: String?) = input
-    fun print(input: String?) = input
-    fun rep(input: String?) = print(read(eval(input)))
-    fun loop(rep: (input: String?) -> String?) {
-        while (true) {
-            print(">")
-            val line = readLine()
-            rep.invoke(line)
-        }
+    fun read(input: String) = readStr(input)
+    fun eval(input: MalType) = input
+    fun print(input: MalType) = prStr(input)
+    fun loop(rep: (input: String) -> String) {
+        kotlin.io.print("> ")
+        println(rep.invoke(readLine() ?: ""))
+            loop(rep)
     }
+    fun rep(input: String) = print(eval(read(input)))
 
     loop(::rep)
 }
