@@ -1,16 +1,20 @@
 package com.mackenziebligh
 
 /**
- * Reads input from the console and converts it into a [MalType]
+ * Reads input from the console and converts it into a [MalType].
  */
 fun readStr(input: String) = readForm(Reader(tokenize(input)))
 
 /**
  * Converts input from [readStr] and turns it into a list of strings (tokens).
  */
-private fun tokenize(input: String): List<String> {
-    return Reader.TOKEN_REGEX.findAll(input).map { it.groups[1]?.value as String }.filter { it != "" }.filter { !it.startsWith(";") }.toList()
-}
+private fun tokenize(input: String) = Reader
+    .TOKEN_REGEX
+    .findAll(input)
+    .map { it.groups[1]?.value as String }
+    .filter { it != "" }
+    .filter { !it.startsWith(";") }
+    .toList()
 
 /**
  * Takes the contents of a [Reader] and turns it into a [MalType].
@@ -30,13 +34,11 @@ private fun readList(reader: Reader) = readListHelper(reader, MalList(), reader.
  * Helper function for [readList] to recursively process a reader and accumulate values recursively.
  */
 private fun readListHelper(reader: Reader, values: MalList, next: String?): MalType {
-    val token = when (reader.peek()) {
+    when (reader.peek()) {
         null -> return values
         ")" -> { reader.next(); null }
         else -> readForm(reader)
-    }
-
-    token?.let { values.add(token) }
+    }?.let { values.add(it) }
 
     return readListHelper(reader, values, reader.next())
 }
@@ -45,12 +47,11 @@ private fun readListHelper(reader: Reader, values: MalList, next: String?): MalT
  * Converts a token contained in a reader into a [MalType].
  */
 private fun readAtom(reader: Reader): MalType {
-    val groups = reader.peek()?.let {
-        Reader.ATOM_REGEX.find(it)?.groups
-    } ?: throw Exception("Cannot be null")
+    val groups = reader.peek()?.let { Reader.ATOM_REGEX.find(it)?.groups }
+        ?: throw Exception("MatchGroupConnection Cannot be null. Reader: $reader")
 
     return when {
-        groups[1]?.value != null -> MalInt(groups[1]?.value?.toLong() ?: 0L)
+        groups[1]?.value != null -> MalLong(groups[1]?.value?.toLong() ?: 0L)
         groups[8]?.value != null -> MalSymbol(groups[8]?.value as String)
         else -> throw Exception("Not parsable")
     }
