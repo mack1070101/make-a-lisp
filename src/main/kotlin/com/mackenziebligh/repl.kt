@@ -51,7 +51,7 @@ fun printer(input: MalType) = prStr(input)
 /**
  * Loops infinitely via recursion. Invokes a "ReadEvaluatePrint" (rep) function with associated command line UI.
  */
-fun loop(rep: () -> String) {
+fun loop(rep: () -> Unit) {
     print("> ")
     println(rep.invoke())
     loop(rep)
@@ -64,7 +64,6 @@ fun main(args: Array<String>) = loop {
     try {
         printer(eval(read(readLine() ?: ""), REPL.env))
     }  catch (e: Exception)  {
-    e.printStackTrace()
-    ""
+        e.printStackTrace()
     }
 }
