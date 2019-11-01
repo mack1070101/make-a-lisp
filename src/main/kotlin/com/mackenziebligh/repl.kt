@@ -51,7 +51,7 @@ fun printer(input: MalType) = prStr(input)
 /**
  * Loops infinitely via recursion. Invokes a "ReadEvaluatePrint" (rep) function with associated command line UI.
  */
-fun loop(rep: () -> Unit) {
+fun loop(rep: () -> Any?) {
     print("> ")
     println(rep.invoke())
     loop(rep)
